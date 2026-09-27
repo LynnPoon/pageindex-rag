@@ -5,15 +5,26 @@ import sys
 from src.query import DocumentChat
 
 # Import load_doc_id so we can reuse a saved document ID.
-from src.ingest import load_doc_id
+from src.ingest import load_doc_id, ingest
 
 
 def main() -> None:
-    print("PageIndex RAG Chat")
+    print("=" * 32)
+    print("  PageIndex Document Assistant")
+    print("=" * 32)
 
-    # Ask the user for the PDF filename stem.
+    pdf_path = (
+        input("\nEnter the path to a new PDF, or press Enter to use a saved PDF: ")
+        .strip()
+        .strip('"')
+    )
+
+    if pdf_path:
+        ingest(pdf_path)
+
+    # Ask the user for the ingested PDF file to chat with.
     filename_stem = input(
-        "Enter saved PDF name without .pdf, for example 'report': "
+        "Enter the name of the saved PDF (without the .pdf extension): "
     ).strip()
 
     # Try to load the saved doc_id.
@@ -31,8 +42,8 @@ def main() -> None:
     # Create a chat object for this document.
     chat = DocumentChat(doc_id)
 
-    print("Ask questions about your document.")
-    print("Type 'exit' or 'quit' to stop.")
+    print("\nAssistant: Your document is ready. Ask me anything about it.")
+    print("Type 'exit' or 'quit' to end the session.")
 
     while True:
         question = input("\nYou: ").strip()

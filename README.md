@@ -1,12 +1,16 @@
 # PageIndex RAG
 
 A small Python project for uploading PDFs to PageIndex and chatting with them
-from the terminal. It saves each uploaded document ID locally so you can ask
-questions later without re-uploading the same PDF.
+from the terminal. When the app starts, you can upload a new PDF or reuse a
+previously saved document without uploading it again.
+
+## Demo
+
+Watch the project demo [here](https://youtu.be/KWMCSZdgw1Q).
 
 ## What It Does
 
-- Uploads a PDF to PageIndex.
+- Prompts you to upload a new PDF or reuse a previously uploaded one.
 - Saves the returned `doc_id` in `data/<pdf-name>.json`.
 - Optionally saves the PageIndex document tree in `data/<pdf-name>_tree.json`.
 - Starts an interactive chat session against a saved document.
@@ -35,41 +39,46 @@ PAGEINDEX_API_KEY=your_pageindex_api_key_here
 
 The application loads this value automatically with `python-dotenv`.
 
-## Ingest a PDF
+## Upload or Reuse a PDF Interactively
 
-Put PDFs under `docs/` or pass any local PDF path. The repository ignores
-`docs/*` so local documents are not committed by default.
-
-Run the ingestion helper from Python:
-
-```powershell
-uv run python -c "from src.ingest import ingest; ingest('docs/report.pdf')"
-```
-
-This creates a local record like:
-
-```text
-data/report.json
-```
-
-That file stores the PageIndex `doc_id` for `docs/report.pdf`.
-
-## Chat With a PDF
-
-Start the terminal chat:
+Start the terminal assistant:
 
 ```powershell
 uv run python -m src.cli
 ```
 
-When prompted, enter the PDF name without `.pdf`. For example, if you ingested
+Put PDFs under `docs/` or provide any local PDF path. The repository ignores
+`docs/*`, so local documents are not committed by default.
+
+The first prompt gives you two choices:
+
+- To upload a new PDF, enter its local path, such as `docs/report.pdf`. The app
+  uploads and processes the file, then saves its document ID in `data/`.
+- To reuse a saved document, press Enter without typing a path. This avoids a
+  new upload.
+
+Next, enter the saved PDF name without `.pdf`. For example, for
 `docs/report.pdf`, enter:
 
 ```text
 report
 ```
 
-Then ask questions about the document. Type `exit` or `quit` to stop.
+You can then ask questions about the document. Type `exit` or `quit` to stop.
+
+Uploading sends the PDF to PageIndex and may use API credits. Reusing a saved
+document only requires its corresponding `data/<pdf-name>.json` file.
+
+## Upload a PDF Without Starting Chat
+
+If you only want to ingest a document, use the ingestion helper:
+
+```powershell
+uv run python -c "from src.ingest import ingest; ingest('docs/report.pdf')"
+```
+
+It creates a local record such as `data/report.json`, which the interactive
+assistant can reuse later.
 
 ## Programmatic Usage
 
